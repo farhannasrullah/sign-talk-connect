@@ -1,10 +1,9 @@
+
 @import "tailwindcss";
 /* 1. Mengimpor Font Poppins dari Google Fonts (Weight: 300, 400, 500, 600, 700) */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
 
 /* 2. Menerapkan Poppins secara Global ke seluruh aplikasi */
 @layer base {

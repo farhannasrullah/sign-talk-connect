@@ -101,7 +101,7 @@ const Profile = ({ user, currentUser, isOwnProfile, onBack, onMessage }) => {
 
            <div className="mt-2">
               <h2 className="text-[#e7e9ea] text-2xl font-bold leading-tight">{profileData.name}</h2>
-              <p className="text-[#71767b] text-sm">@{profileData.username}</p>
+              <p className="text-[#71767b] text-sm">{profileData.username}</p>
            </div>
 
            <div className="mt-4">

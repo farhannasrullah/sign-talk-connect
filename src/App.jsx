@@ -65,7 +65,7 @@ export default function App() {
                  const newUser = new User({ 
                     id: u.uid, 
                     name: u.displayName || 'User', 
-                    username: '@' + (u.displayName || 'user').toLowerCase().replace(/\s/g,''),
+                    username: + (u.displayName || 'user').toLowerCase().replace(/\s/g,''),
                     email: u.email,
                     isOnline: true 
                  });

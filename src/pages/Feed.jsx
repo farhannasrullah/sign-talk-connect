@@ -146,7 +146,7 @@ const Feed = ({ currentUser, onViewProfile, users }) => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                         <h3 onClick={() => onViewProfile(authorData)} className="text-[#e7e9ea] font-bold text-[0.95rem] hover:underline cursor-pointer">{authorData?.name}</h3>
-                        <span onClick={() => onViewProfile(authorData)} className="text-[#71767b] text-sm cursor-pointer">@{authorData?.username}</span>
+                        <span onClick={() => onViewProfile(authorData)} className="text-[#71767b] text-sm cursor-pointer">{authorData?.username}</span>
                         <span className="text-[#71767b] text-sm">· {new Date(post.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                     </div>
                     <p className="text-[#e7e9ea] leading-relaxed mt-1 text-[0.95rem] whitespace-pre-wrap">{post.content}</p>

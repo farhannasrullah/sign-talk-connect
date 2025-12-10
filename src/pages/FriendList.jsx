@@ -62,7 +62,7 @@ const FriendList = ({ users, currentUser, onViewProfile }) => {
                       </button>
                   </div>
                   <h3 className="text-[#e7e9ea] text-lg font-bold group-hover:underline">{u.name}</h3>
-                  <p className="text-[#71767b] text-sm mb-3">@{u.username}</p>
+                  <p className="text-[#71767b] text-sm mb-3">{u.username}</p>
                   <p className="text-[#e7e9ea] text-sm mb-4 line-clamp-2">{u.bio || "Tidak ada bio."}</p>
                   <div className="mt-auto flex items-center gap-4 text-[#71767b] text-xs">
                     <span>{u.followers?.length || 0} Pengikut</span>
