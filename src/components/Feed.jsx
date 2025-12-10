@@ -1,64 +1,111 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './Feed.css'
+import { UserService, PostService } from '../services/Services.js'
 
 function Feed() {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      author: 'Sarah Johnson',
-      avatar: '👩',
-      time: '2 hours ago',
-      content: 'Just learned a new sign for "coffee" today! ☕ The sign language community is amazing!',
-      likes: 24,
-      comments: 5,
-      image: null
-    },
-    {
-      id: 2,
-      author: 'Mike Chen',
-      avatar: '👨',
-      time: '5 hours ago',
-      content: 'Excited to announce our local deaf community meetup this Saturday at Central Park! 🤟',
-      likes: 42,
-      comments: 12,
-      image: null
-    },
-    {
-      id: 3,
-      author: 'Emma Williams',
-      avatar: '👩‍🦰',
-      time: '1 day ago',
-      content: 'Teaching my hearing friends sign language. They love it! Communication is for everyone 💚',
-      likes: 68,
-      comments: 15,
-      image: null
+  const userService = UserService.getInstance()
+  const postService = PostService.getInstance()
+  
+  // Initialize sample data
+  useEffect(() => {
+    // Create sample users if not already created
+    if (userService.getAllUsers().length === 0) {
+      const sarah = userService.createUser({
+        name: 'Sarah Johnson',
+        username: '@sarah_signs',
+        email: 'sarah@example.com',
+        avatar: '👩',
+        bio: 'ASL teacher & advocate',
+        isOnline: true
+      }, 'deaf')
+      
+      const mike = userService.createUser({
+        name: 'Mike Chen',
+        username: '@mikechen',
+        email: 'mike@example.com',
+        avatar: '👨',
+        bio: 'Deaf community organizer',
+        isOnline: true
+      }, 'deaf')
+      
+      const emma = userService.createUser({
+        name: 'Emma Williams',
+        username: '@emmawill',
+        email: 'emma@example.com',
+        avatar: '👩‍🦰',
+        bio: 'Sign language enthusiast'
+      }, 'regular')
+      
+      const currentUser = userService.createUser({
+        name: 'You',
+        username: '@you',
+        email: 'you@example.com',
+        avatar: '😊',
+        bio: 'Learning sign language'
+      }, 'deaf')
+      
+      userService.setCurrentUser(currentUser)
+      
+      // Create sample posts using OOP
+      if (postService.getAllPosts().length === 0) {
+        postService.createPost({
+          author: sarah,
+          content: 'Just learned a new sign for "coffee" today! ☕ The sign language community is amazing!',
+          likes: 24,
+          comments: 5
+        })
+        
+        postService.createPost({
+          author: mike,
+          content: 'Excited to announce our local deaf community meetup this Saturday at Central Park! 🤟',
+          likes: 42,
+          comments: 12
+        })
+        
+        postService.createPost({
+          author: emma,
+          content: 'Teaching my hearing friends sign language. They love it! Communication is for everyone 💚',
+          likes: 68,
+          comments: 15
+        })
+      }
     }
-  ])
+  }, [])
 
+  const [posts, setPosts] = useState([])
   const [newPost, setNewPost] = useState('')
+
+  // Load posts from service
+  useEffect(() => {
+    const loadedPosts = postService.getAllPosts().map(post => post.toJSON())
+    setPosts(loadedPosts)
+  }, [])
 
   const handleCreatePost = (e) => {
     e.preventDefault()
     if (newPost.trim()) {
-      const post = {
-        id: posts.length + 1,
-        author: 'You',
-        avatar: '😊',
-        time: 'Just now',
-        content: newPost,
-        likes: 0,
-        comments: 0,
-        image: null
-      }
-      setPosts([post, ...posts])
+      const currentUser = userService.getCurrentUser()
+      const post = postService.createPost({
+        author: currentUser,
+        content: newPost
+      })
+      
+      // Reload posts from service
+      const updatedPosts = postService.getAllPosts().map(p => p.toJSON())
+      setPosts(updatedPosts)
       setNewPost('')
     }
   }
 
   const handleLike = (postId) => {
-    setPosts(posts.map(post => 
-      post.id === postId ? { ...post, likes: post.likes + 1 } : post
-    ))
+    try {
+      postService.likePost(postId)
+      // Reload posts to reflect the change
+      const updatedPosts = postService.getAllPosts().map(p => p.toJSON())
+      setPosts(updatedPosts)
+    } catch (error) {
+      console.error('Error liking post:', error)
+    }
   }
 
   return (
@@ -81,16 +128,21 @@ function Feed() {
         {posts.map(post => (
           <div key={post.id} className="post">
             <div className="post-header">
-              <div className="post-avatar">{post.avatar}</div>
+              <div className="post-avatar">{post.author?.avatar || '👤'}</div>
               <div className="post-info">
-                <h3 className="post-author">{post.author}</h3>
-                <span className="post-time">{post.time}</span>
+                <h3 className="post-author">{post.author?.name || 'Unknown'}</h3>
+                <span className="post-time">{post.createdAt ? new Date(post.createdAt).toLocaleString() : 'Just now'}</span>
+                <span className="post-user-type"> • {post.author?.userType || 'User'}</span>
               </div>
             </div>
             
             <div className="post-content">
               <p>{post.content}</p>
-              {post.image && <img src={post.image} alt="Post" className="post-image" />}
+              {post.type === 'video' && (
+                <div className="post-video-info">
+                  📹 Video Post • {post.views} views
+                </div>
+              )}
             </div>
             
             <div className="post-actions">
@@ -104,7 +156,7 @@ function Feed() {
                 💬 {post.comments} Comments
               </button>
               <button className="post-action-btn">
-                🔗 Share
+                🔗 Share ({post.engagementScore} score)
               </button>
             </div>
           </div>
