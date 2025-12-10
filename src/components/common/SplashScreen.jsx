@@ -60,7 +60,7 @@ const SplashScreen = ({ finishLoading }) => {
         
         {/* App Name */}
         <h1 className="mt-6 text-2xl font-grotesk font-bold text-white tracking-widest uppercase">
-          SignTalks <span className="text-[#1d9bf0]">Connect</span>
+          SignTalk <span className="text-[#1d9bf0]">Connect</span>
         </h1>
       </div>
 

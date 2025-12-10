@@ -49,6 +49,5 @@
 .animate-glow-pulse {
   animation: glow 2s ease-in-out infinite;
 }
-
 /* Safe area for mobile nav */
 .safe-area-pb { padding-bottom: env(safe-area-inset-bottom); }
